@@ -3,31 +3,97 @@ ArDooRover
 https://github.com/doothings/ardurover
 
 */
+#include <IRremote.h>
 
-int enablePin = 11;
-int in1Pin = 10;
-int in2Pin = 9;
-int switchPin = 7;
-int potPin = 0;
+int RECV_PIN = 15;
+
+//Arduino Pin   //IC PIN  
+/*Left Motor*/
+int in1Pin = 2; //2 RED
+int in2Pin = 3; //7 BLACK
+/*Right Motor*/
+int in3Pin = 4; //10 RED
+int in4Pin = 5; //15 BLACK
+
+
+IRrecv irrecv(RECV_PIN);
+decode_results results;
 
 void setup()
 {
   pinMode(in1Pin, OUTPUT);
   pinMode(in2Pin, OUTPUT);
-  pinMode(enablePin, OUTPUT);
-  pinMode(switchPin, INPUT_PULLUP);
+  pinMode(in3Pin, OUTPUT);
+  pinMode(in4Pin, OUTPUT);
+  Serial.begin(9600);
+  irrecv.enableIRIn(); // Start the receiver
+  flushValues();
 }
 
 void loop()
 {
-  int speed = analogRead(potPin) / 4;
-  boolean reverse = digitalRead(switchPin);
-  setMotor(speed, reverse);
+  if (irrecv.decode(&results)) {
+    Serial.println(results.value);
+    switch(results.value)
+    {
+       case 752 : //up
+         moveForward();
+         break;
+       case 2800 : //down
+         moveBackward();
+         break;
+       case 3280 : //right
+         turnLeft();
+         break;
+       case 720  : //left
+         turnRight();
+         break;
+    }
+      
+      delay(500);
+      flushValues();
+      irrecv.resume(); // Receive the next value
+  }
 }
 
-void setMotor(int speed, boolean reverse)
+
+void moveForward()
 {
-  analogWrite(enablePin, speed);
-  digitalWrite(in1Pin, ! reverse);
-  digitalWrite(in2Pin, reverse);
+  digitalWrite(in1Pin, HIGH);
+  digitalWrite(in2Pin, LOW);
+  digitalWrite(in3Pin, HIGH);
+  digitalWrite(in4Pin, LOW);
+  
+}
+
+void moveBackward()
+{
+  digitalWrite(in1Pin, LOW);
+  digitalWrite(in2Pin, HIGH);
+  digitalWrite(in3Pin, LOW);
+  digitalWrite(in4Pin, HIGH);
+}
+
+void turnLeft()
+{
+  digitalWrite(in1Pin, LOW);
+  digitalWrite(in2Pin, LOW);
+  digitalWrite(in3Pin, HIGH);
+  digitalWrite(in4Pin, LOW);
+}
+
+void turnRight()
+{
+  digitalWrite(in1Pin, HIGH);
+  digitalWrite(in2Pin, LOW);
+  digitalWrite(in3Pin, LOW);
+  digitalWrite(in4Pin, LOW);
+}
+
+void flushValues()
+{
+  digitalWrite(in1Pin, LOW);
+  digitalWrite(in2Pin, LOW);
+  digitalWrite(in3Pin, LOW);
+  digitalWrite(in4Pin,LOW);
 }
