@@ -10,10 +10,10 @@ int RECV_PIN = 15;
 //Arduino Pin   //IC PIN  
 /*Left Motor*/
 int in1Pin = 2; //2 RED
-int in2Pin = 3; //7 BLACK
+int in2Pin = 3; //3 BLACK
 /*Right Motor*/
-int in3Pin = 4; //10 RED
-int in4Pin = 5; //15 BLACK
+int in3Pin = 4; //4 RED
+int in4Pin = 5; //5 BLACK
 
 
 IRrecv irrecv(RECV_PIN);
@@ -42,16 +42,23 @@ void loop()
        case 2800 : //down
          moveBackward();
          break;
+
        case 3280 : //right
-         turnLeft();
-         break;
-       case 720  : //left
          turnRight();
          break;
+ 
+       case 720  : //left
+         turnLeft();
+         break;
+         
+       case 2672  : //stop
+         flushValues();
+         break;  
+
     }
       
       delay(500);
-      flushValues();
+      //flushValues();
       irrecv.resume(); // Receive the next value
   }
 }
@@ -77,7 +84,7 @@ void moveBackward()
 void turnLeft()
 {
   digitalWrite(in1Pin, LOW);
-  digitalWrite(in2Pin, LOW);
+  digitalWrite(in2Pin, HIGH);
   digitalWrite(in3Pin, HIGH);
   digitalWrite(in4Pin, LOW);
 }
@@ -87,7 +94,7 @@ void turnRight()
   digitalWrite(in1Pin, HIGH);
   digitalWrite(in2Pin, LOW);
   digitalWrite(in3Pin, LOW);
-  digitalWrite(in4Pin, LOW);
+  digitalWrite(in4Pin, HIGH);
 }
 
 void flushValues()
