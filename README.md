@@ -14,5 +14,6 @@ Component list
 * 1 L293D motor IC
 * 2 DC motors (100 RPM)
 * 2 9V batteries
-* 2 Wheels
+* 2 Wheels (regular) and a caster wheel
 * Jumper wires and PCB
+* Acrylic frame
