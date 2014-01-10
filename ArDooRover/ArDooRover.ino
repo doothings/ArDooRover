@@ -15,9 +15,10 @@ int in2Pin = 3; //3 BLACK
 int in3Pin = 4; //4 RED
 int in4Pin = 5; //5 BLACK
 
-
 IRrecv irrecv(RECV_PIN);
 decode_results results;
+
+int drawDigit(int);
 
 void setup()
 {
@@ -49,6 +50,10 @@ void loop()
  
        case 720  : //left
          turnLeft();
+         break;
+         
+       case 3600:
+         drawDigit(8);
          break;
          
        case 2672  : //stop
@@ -104,3 +109,38 @@ void flushValues()
   digitalWrite(in3Pin, LOW);
   digitalWrite(in4Pin,LOW);
 }
+
+void oneMotorLeft()
+{
+  digitalWrite(in1Pin, LOW);
+  digitalWrite(in2Pin, LOW);
+  digitalWrite(in3Pin, HIGH);
+  digitalWrite(in4Pin, LOW);
+}
+
+void oneMotorRight()
+{
+  digitalWrite(in1Pin, HIGH);
+  digitalWrite(in2Pin, LOW);
+  digitalWrite(in3Pin, LOW);
+  digitalWrite(in4Pin, LOW);
+}
+
+int drawDigit(int num)
+{
+  
+  switch (num)
+  {
+     case 8:
+       oneMotorRight();
+       delay(7000);
+       flushValues();
+       oneMotorLeft();
+       delay(7000);
+       flushValues();
+      
+       break;
+  }
+  
+}
+
